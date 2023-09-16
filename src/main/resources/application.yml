@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: wander-config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${GIT_CONFIG_URI}
+          clone-on-start: true
+          username: ${GIT_USER_NAME}
+          password: ${GIT_PASSWORD}
+          default-label: ${GIT_DEFAULT_LABEL}
+  security:
+    user:
+      name: ${AUTH_USER}
+      password: ${AUTH_PASSWORD}
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure.include:
+        - health
+        - loggers
+        - prometheus
+        - info
+      base-path: /actuator
+      path-mapping:
+        prometheus: prometheus
+    enabled-by-default: true
+  endpoint:
+    health:
+      enabled: true
+      probes.enabled: true
+      show-details: always
+      show-components: always
+      group:
+        liveness.include: livenessState
+        readiness.include: readinessState
+    prometheus:
+      enabled: true
+    metrics:
+      enabled: true
+  health:
+    defaults.enabled: true
+    ping.enabled: true
+  metrics:
+    tags:
+      app: ${spring.application.name}
